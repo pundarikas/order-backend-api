@@ -25,6 +25,10 @@ export class OrderService {
     return this.orderRepo.find();
   }
 
+  async findOne(id: number): Promise<Order> {
+    return this.orderRepo.findOneBy({ id });
+  }
+
   async create(input: OrderInputDto): Promise<Order> {
     const { customerId, items: inputItems } = input;
 

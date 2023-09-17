@@ -1,4 +1,4 @@
-import { CommonData } from 'libs/common/common';
+import { CommonData } from 'src/common';
 import { Category } from 'src/category/category.entity';
 import {
   Column,

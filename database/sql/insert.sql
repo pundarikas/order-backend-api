@@ -72,6 +72,10 @@ INSERT INTO "order".item ("name", description, price, "itemNumber", color, categ
 	('Sofa cover', '', 3499, 't002', 'blue', 2);
 
 
+INSERT INTO "order".item ("name", description, price, flavor, category_id)
+	VALUES	('Hotdog', '', 20, 'chicken', 3);
+
+
 INSERT INTO "order".customer_x_category ( customer_id, category_id)
 VALUES ( 1, 1),( 1, 3);
 

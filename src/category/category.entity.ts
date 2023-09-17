@@ -1,4 +1,4 @@
-import { CommonData } from 'libs/common/common';
+import { CommonData } from 'src/common';
 import { CustomerXCategory } from 'src/customer/customer_x_category.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 

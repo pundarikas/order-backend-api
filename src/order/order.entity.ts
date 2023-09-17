@@ -1,4 +1,4 @@
-import { CommonData } from 'libs/common/common';
+import { CommonData } from 'src/common';
 import { Customer } from 'src/customer/customer.entity';
 import {
   Column,

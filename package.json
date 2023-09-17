@@ -61,7 +61,7 @@
       "json",
       "ts"
     ],
-    "rootDir": ".",
+    "rootDir": "./",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -76,7 +76,11 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
-      "^@app/typeorm(|/.*)$": "<rootDir>/libs/typeorm/src/$1"
-    }
+      "^@app/database(|/.*)$": "<rootDir>/libs/database/src/$1",
+      "^src/(.*)$": "<rootDir>/src/$1"
+    },
+    "setupFiles": [
+      "dotenv/config"
+    ]
   }
 }
