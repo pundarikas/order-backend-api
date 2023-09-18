@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { OrderInputDto } from './order.dto';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { FindOrderDto, OrderCreateDto } from './order.dto';
 import { Order } from './order.entity';
 import { OrderService } from './order.service';
 
@@ -8,8 +8,8 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Get()
-  async findAll() {
-    return this.orderService.findAll();
+  async findAll(@Query() query: FindOrderDto) {
+    return this.orderService.findOrders(query);
   }
 
   @Get('/:id')
@@ -18,7 +18,7 @@ export class OrderController {
   }
 
   @Post()
-  async create(@Body() input: OrderInputDto): Promise<Order> {
+  async create(@Body() input: OrderCreateDto): Promise<Order> {
     return this.orderService.create(input);
   }
 }

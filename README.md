@@ -1,37 +1,23 @@
+### Order API
+
+The Order API is a backend project to handle simple order creation and retrieval build on Nestjs Framework. Steps to run the app are as follows:
+
+- Set up database and load initial data for item, categories and customers
+
 ```bash
-# development
+$ docker-compose up
+```
+
+- Start the app. The app should run at localhost:3000/ .
+
+```bash
 $ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
 ```
 
-## Test
+- Run tests
 
 ```bash
-# unit tests
 $ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+Exposed API can be found at http://localhost:3000/api after successfully running the app.

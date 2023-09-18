@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Customer } from './customer.entity';
 import { CustomerXCategory } from './customer_x_category.entity';
@@ -19,7 +19,13 @@ export class CustomerService {
   }
 
   async findById(id: number): Promise<Customer> {
-    return this.customerRepo.findOneBy({ id });
+    try {
+      const customer = await this.customerRepo.findOneByOrFail({ id });
+      return customer;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new NotFoundException(error.message);
+    }
   }
 
   async findCustomerCategories(

@@ -16,7 +16,7 @@ export class InputItem {
   quantity: number;
 }
 
-export class OrderInputDto {
+export class OrderCreateDto {
   @IsArray()
   @Type(() => InputItem)
   @ApiProperty({
@@ -29,4 +29,20 @@ export class OrderInputDto {
     type: Number,
   })
   customerId: number;
+}
+
+export class FindOrderDto {
+  @ApiProperty({
+    type: Number,
+  })
+  @Type(() => Number)
+  @IsNumber()
+  page: number;
+
+  @ApiProperty({
+    type: Number,
+  })
+  @Type(() => Number)
+  @IsNumber()
+  size: number;
 }

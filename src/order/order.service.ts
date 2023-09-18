@@ -1,14 +1,15 @@
 import { Repository } from 'typeorm';
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 
 import { Customer } from 'src/customer/customer.entity';
 import { CustomerService } from 'src/customer/customer.service';
 import { Item } from 'src/item/item.entity';
 import { ItemService } from 'src/item/item.service';
 
-import { InputItem, OrderInputDto } from './order.dto';
+import { FindOrderDto, InputItem, OrderCreateDto } from './order.dto';
 import { Order } from './order.entity';
-import { OrderItem } from './types/order';
+import { OrderItem, OrderResult } from './types/order';
+import { NumberUtils } from 'src/utilities/number_utils';
 
 @Injectable()
 export class OrderService {
@@ -21,39 +22,51 @@ export class OrderService {
     private itemService: ItemService,
   ) {}
 
-  async findAll(): Promise<Order[]> {
-    return this.orderRepo.find();
+  async findOrders(query: FindOrderDto): Promise<OrderResult> {
+    const take = query.size || 10;
+    const skip = query.page * query.size || 0;
+
+    const [result, total] = await this.orderRepo.findAndCount({
+      take: take,
+      skip: skip,
+    });
+    return {
+      data: result,
+      count: total,
+    };
   }
 
   async findOne(id: number): Promise<Order> {
-    return this.orderRepo.findOneBy({ id });
+    try {
+      const order = await this.orderRepo.findOneByOrFail({ id });
+      return order;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new NotFoundException(error.message);
+    }
   }
 
-  async create(input: OrderInputDto): Promise<Order> {
+  async create(input: OrderCreateDto): Promise<Order> {
     const { customerId, items: inputItems } = input;
+    try {
+      const customer = await this.customerService.findById(customerId);
 
-    const customer = await this.customerService.findById(customerId);
+      const items = await this.itemService.findByIds(
+        inputItems.map((item) => item.itemId),
+      );
 
-    const items = await Promise.all(
-      inputItems.map(async (inputItem) => {
-        return this.itemService.findById(inputItem.itemId);
-      }),
-    );
+      const { orderItems, orderTotal } = await this._prepareOrderItems(
+        items,
+        inputItems,
+        customer,
+      );
 
-    const { orderItems, orderTotal } = await this._prepareOrderItems(
-      items,
-      inputItems,
-      customer,
-    );
-
-    const order = new Order();
-    order.customer = customer;
-    order.orderItems = orderItems;
-    order.orderTotal = orderTotal;
-
-    this.logger.log('Saving order...', order);
-
-    return this.orderRepo.save(order);
+      const order = this.orderRepo.create({ customer, orderItems, orderTotal });
+      this.logger.log('Creating order...');
+      return this.orderRepo.save(order);
+    } catch (error) {
+      throw error;
+    }
   }
 
   private async _prepareOrderItems(
@@ -76,7 +89,10 @@ export class OrderService {
       const totalAmount = itemDetail.price * inputItem.quantity;
 
       if (memberCategoryNames?.includes(itemDetail.category?.name)) {
-        discount = (itemDetail.category.discount / 100) * totalAmount;
+        discount = NumberUtils.calcPercentage(
+          itemDetail.category.discount,
+          totalAmount,
+        );
       }
 
       const orderItem: OrderItem = {
