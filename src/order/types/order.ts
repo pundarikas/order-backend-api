@@ -6,6 +6,7 @@ export interface OrderItem {
   discount: number;
   quantity: number;
   totalAmount: number;
+  category: string;
 }
 
 export interface OrderResult {

@@ -101,6 +101,7 @@ export class OrderService {
         discount,
         quantity: inputItem.quantity,
         totalAmount: totalAmount - discount,
+        category: itemDetail.category?.name,
       };
 
       orderTotal += totalAmount - discount;
